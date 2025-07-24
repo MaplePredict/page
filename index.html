@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaplePredict - AI-Powered Predictions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2962FF; /* AI blue */
+            --secondary: #00B4D8; /* Cyan */
+            --accent: #6200EA; /* Deep purple */
+            --dark: #0A192F; /* Navy blue */
+            --light: #E6F1FF; /* Light blue */
+            --success: #00C853; /* Green */
+        }
+        
+        body {
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            padding: 0.5rem 2rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        }
+        
+        .logo {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .language-selector {
+            position: relative;
+        }
+        
+        .language-btn {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--dark);
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            min-width: 120px;
+            display: none;
+        }
+        
+        .language-dropdown.show {
+            display: block;
+            animation: fadeInDown 0.3s ease;
+        }
+        
+        .language-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.2s ease;
+        }
+        
+        .language-dropdown a:hover {
+            background-color: rgba(41, 98, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        .language-dropdown a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0093B8;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 180, 216, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #1A4FCA;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(41, 98, 255, 0.4);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background-color: #4A00B0;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(98, 0, 234, 0.4);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 8rem 2rem 5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://public.bnbstatic.com/image/cms/crawler/TODAYQ_NEWS/Untitled-design-388.jpg') center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+            max-width: 700px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .promo-code {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .promo-code h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .promo-input {
+            display: flex;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .promo-input input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            font-size: 1rem;
+            background: white;
+            color: var(--dark);
+        }
+        
+        .promo-input button {
+            padding: 0 1.2rem;
+            border: none;
+            background: var(--secondary);
+            color: white;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .promo-input button:hover {
+            background: #0093B8;
+        }
+        
+        .copy-success {
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .copy-success.show {
+            opacity: 1;
+        }
+        
+        .ai-section {
+            padding: 5rem 2rem;
+            background-color: white;
+            position: relative;
+        }
+        
+        .ai-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .ai-image {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .ai-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .ai-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .ai-text p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .ai-features {
+            margin-top: 2rem;
+        }
+        
+        .ai-feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .ai-feature-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .ai-feature-text h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        .ai-feature-text p {
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .packages {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #E6F1FF 0%, #B3D4FF 100%);
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--dark);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            opacity: 0.8;
+        }
+        
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .package {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .package:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .package-popular {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 0.3rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transform: rotate(5deg);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+        
+        .package-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1A4FCA 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .package-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://public.bnbstatic.com/image/cms/crawler/TODAYQ_NEWS/Untitled-design-388.jpg');
+            opacity: 0.1;
+        }
+        
+        .package-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .package-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .package-earnings {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .package-body {
+            padding: 2rem;
+        }
+        
+        .package-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem;
+        }
+        
+        .package-feature {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.5;
+        }
+        
+        .package-feature i {
+            color: var(--secondary);
+            margin-right: 0.8rem;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+        
+        .package-button {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, var(--secondary) 0%, #0093B8 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+        }
+        
+        .package-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 180, 216, 0.4);
+        }
+        
+        .games {
+            background: linear-gradient(135deg, var(--dark) 0%, #1a2a3a 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .games::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.pinimg.com/originals/f7/96/5f/f7965f3f92ea488786bab87713f304cf.png');
+            opacity: 0.05;
+        }
+        
+        .game-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .game-icon {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,180,216,0.2) 0%, rgba(41,98,255,0.2) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .game-icon:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .game-icon:hover::after {
+            opacity: 1;
+        }
+        
+        .game-icon i {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .how-it-works {
+            padding: 5rem 2rem;
+            background-color: white;
+            position: relative;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 3rem auto 0;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .step:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .step-description {
+            color: var(--dark);
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .testimonials {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            text-align: center;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+        
+        .testimonial {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+        }
+        
+        .author-info h4 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .author-info p {
+            margin: 0.2rem 0 0;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .final-cta {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, #1A4FCA 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/diagonal-striped-brick.png');
+            opacity: 0.1;
+        }
+        
+        .final-cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .final-cta p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        .delay-4 {
+            animation-delay: 0.8s;
+        }
+        
+        .delay-5 {
+            animation-delay: 1s;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .package-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ai-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="logo">
+            <img src="https://i.yapx.ru/aB7JG.png" alt="MaplePredict Logo">
+        Maple<span>Predict</span>
+        </div>
+        
+        <div class="nav-links">
+            <a href="#ai-section">AI Technology</a>
+            <a href="#packages">Packages</a>
+            <a href="#games">Games</a>
+            <a href="#how-it-works">How It Works</a>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-selector">
+                <button class="language-btn" id="languageBtn">
+                    <i class="fas fa-globe"></i> EN
+                </button>
+                <div class="language-dropdown" id="languageDropdown">
+                    <a href="#" class="active" data-lang="en">English</a>
+                    <a href="#" data-lang="fr">Français</a>
+                </div>
+            </div>
+            
+            <a href="#" class="btn btn-secondary" id="activateBtn">
+                <i class="fas fa-rocket"></i> Activate Program
+            </a>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="animate__animated animate__fadeInDown">Advanced AI Prediction Technology</h1>
+            <p class="animate__animated animate__fadeInUp animate__delay-1s">Harness the power of cutting-edge artificial intelligence to maximize your earnings with highly accurate game predictions.</p>
+            
+            <div class="promo-code animate__animated animate__fadeInUp animate__delay-2s">
+                <h3>Use promo code for 15% bonus on first deposit</h3>
+                <div class="promo-input">
+                    <input type="text" value="PKL777" id="promoCode" readonly>
+                    <button onclick="copyPromoCode()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div class="copy-success" id="copySuccess">Copied to clipboard!</div>
+            </div>
+            
+            <div class="cta-buttons animate__animated animate__fadeInUp animate__delay-3s">
+                <a href="#packages" class="btn btn-primary">
+                    <i class="fas fa-gem"></i> View Packages
+                </a>
+                <a href="https://t.me/noelcashbot" class="btn btn-secondary">
+                    <i class="fab fa-telegram"></i> Join Telegram
+                </a>
+                <a href="https://affpa.top/L?tag=d_4539195m_21895c_&site=4539195&ad=21895&r=registration" class="btn btn-secondary">
+                    <i class="fas fa-user-plus"></i> Register Now
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="ai-section" id="ai-section">
+        <div class="ai-content">
+            <div class="ai-image animate__animated animate__fadeInLeft">
+                <img src="https://public.bnbstatic.com/image/cms/crawler/TODAYQ_NEWS/Untitled-design-388.jpg" alt="AI Technology">
+            </div>
+            <div class="ai-text animate__animated animate__fadeInRight">
+                <h2>Our AI Prediction Engine</h2>
+                <p>MaplePredict utilizes state-of-the-art machine learning algorithms trained on millions of game outcomes to deliver the most accurate predictions in the industry.</p>
+                <p>Our neural networks continuously learn and adapt to game patterns, ensuring you always have the winning edge.</p>
+                
+                <div class="ai-features">
+                    <div class="ai-feature">
+                        <div class="ai-feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="ai-feature-text">
+                            <h3>Deep Learning Models</h3>
+                            <p>Advanced neural networks that analyze complex game patterns</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-feature">
+                        <div class="ai-feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="ai-feature-text">
+                            <h3>Real-time Analysis</h3>
+                            <p>Continuous processing of live game data for up-to-the-minute predictions</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-feature">
+                        <div class="ai-feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="ai-feature-text">
+                            <h3>Proven Accuracy</h3>
+                            <p>Consistent 85-95% prediction accuracy across all supported games</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="packages" id="packages">
+        <h2 class="section-title animate__animated animate__fadeIn">Investment Packages</h2>
+        <p class="section-subtitle animate__animated animate__fadeIn animate__delay-1s">Choose the package that fits your goals and start earning today</p>
+        
+        <div class="package-grid">
+            <div class="package animate__animated animate__fadeInUp">
+                <div class="package-header">
+                    <h3 class="package-name">Starter Package</h3>
+                    <div class="package-price">20 CAD</div>
+                    <div class="package-earnings">Potential earnings: 900 CAD</div>
+                </div>
+                <div class="package-body">
+                    <ul class="package-features">
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Daily signals for 7 days</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>95% accuracy rate</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Basic support</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Access to 3 games</span>
+                        </li>
+                    </ul>
+                    <a href="https://t.me/noelcashbot" class="package-button">
+                        <i class="fab fa-telegram"></i> Get Started
+                    </a>
+                </div>
+            </div>
+            
+            <div class="package animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="package-popular">MOST POPULAR</div>
+                <div class="package-header">
+                    <h3 class="package-name">Premium Package</h3>
+                    <div class="package-price">30 CAD</div>
+                    <div class="package-earnings">Potential earnings: 1400 CAD</div>
+                </div>
+                <div class="package-body">
+                    <ul class="package-features">
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Daily signals for 14 days</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>95% accuracy rate</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Priority support</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Bonus strategies</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Access to all games</span>
+                        </li>
+                    </ul>
+                    <a href="https://t.me/noelcashbot" class="package-button">
+                        <i class="fab fa-telegram"></i> Get Started
+                    </a>
+                </div>
+            </div>
+            
+            <div class="package animate__animated animate__fadeInUp animate__delay-2s">
+                <div class="package-header">
+                    <h3 class="package-name">VIP Package</h3>
+                    <div class="package-price">40 CAD</div>
+                    <div class="package-earnings">Potential earnings: 2000 CAD</div>
+                </div>
+                <div class="package-body">
+                    <ul class="package-features">
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Daily signals for 30 days</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>95% accuracy rate</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>24/7 VIP support</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Advanced strategies</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Personal analyst consultation</span>
+                        </li>
+                        <li class="package-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Access to all games + future releases</span>
+                        </li>
+                    </ul>
+                    <a href="https://t.me/noelcashbot" class="package-button">
+                        <i class="fab fa-telegram"></i> Get Started
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="games" id="games">
+        <h2 class="section-title animate__animated animate__fadeIn">Supported Games</h2>
+        <p class="section-subtitle animate__animated animate__fadeIn animate__delay-1s">Our AI generates predictions for these popular games</p>
+        
+        <div class="game-icons">
+            <div class="game-icon floating">
+                <i class="fas fa-bomb"></i>
+                Bombucks
+            </div>
+            <div class="game-icon floating delay-1">
+                <i class="fas fa-land-mine-on"></i>
+                Mines
+            </div>
+            <div class="game-icon floating delay-2">
+                <i class="fas fa-futbol"></i>
+                Penalty
+            </div>
+            <div class="game-icon floating delay-3">
+                <i class="fas fa-plane"></i>
+                Aviator
+            </div>
+            <div class="game-icon floating delay-5">
+                <i class="fas fa-road"></i>
+                Chiken Road
+            </div>
+        </div>
+    </section>
+    
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title animate__animated animate__fadeIn">How It Works</h2>
+        <p class="section-subtitle animate__animated animate__fadeIn animate__delay-1s">Start earning in just 3 simple steps</p>
+        
+        <div class="steps">
+            <div class="step fade-in">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Choose Your Package</h3>
+                <p class="step-description">Select the investment package that matches your goals and budget. All packages come with our money-back guarantee.</p>
+            </div>
+            
+            <div class="step fade-in animate__delay-1s">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Connect via Telegram</h3>
+                <p class="step-description">After payment, you'll receive access to our private Telegram channel where we post all predictions and strategies.</p>
+            </div>
+            
+            <div class="step fade-in animate__delay-2s">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Follow & Earn</h3>
+                <p class="step-description">Receive daily AI-generated signals and follow our expert strategies to maximize your earnings.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="testimonials" id="testimonials">
+        <h2 class="section-title animate__animated animate__fadeIn">Success Stories</h2>
+        <p class="section-subtitle animate__animated animate__fadeIn animate__delay-1s">What our members say about MaplePredict</p>
+        
+        <div class="testimonial-grid">
+            <div class="testimonial fade-in">
+                <div class="testimonial-content">
+                    "I was skeptical at first, but after trying the starter package, I made back my investment in just 2 days. The VIP package is absolutely worth it!"
+                </div>
+                <div class="testimonial-author">
+                    <img src="https://cdn3.vectorstock.com/i/1000x1000/91/82/manager-flat-icon-vector-10039182.jpg" alt="David K.">
+                    <div class="author-info">
+                        <h4>David K.</h4>
+                        <p>VIP Member since 2022</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial fade-in animate__delay-1s">
+                <div class="testimonial-content">
+                    "The AI predictions are incredibly accurate. I've increased my earnings by 300% since joining. The support team is always helpful too."
+                </div>
+                <div class="testimonial-author">
+                    <img src="https://cdn3.vectorstock.com/i/1000x1000/91/82/manager-flat-icon-vector-10039182.jpg" alt="Sarah M.">
+                    <div class="author-info">
+                        <h4>Sarah M.</h4>
+                        <p>Premium Member</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial fade-in animate__delay-2s">
+                <div class="testimonial-content">
+                    "As a beginner, I appreciated the simple instructions. The predictions are easy to follow and have helped me build my bankroll consistently."
+                </div>
+                <div class="testimonial-author">
+                    <img src="https://cdn3.vectorstock.com/i/1000x1000/91/82/manager-flat-icon-vector-10039182.jpg" alt="James T.">
+                    <div class="author-info">
+                        <h4>James T.</h4>
+                        <p>Starter Package User</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="final-cta">
+        <h2>Ready to Transform Your Earnings?</h2>
+        <p>Join hundreds of satisfied members who are already benefiting from our AI-powered predictions.</p>
+        <div class="cta-buttons">
+            <a href="#packages" class="btn btn-primary">
+                <i class="fas fa-gem"></i> Choose Package
+            </a>
+            <a href="https://t.me/noelcashbot" class="btn btn-secondary">
+                <i class="fab fa-telegram"></i> Join Telegram
+            </a>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>MaplePredict</h3>
+                <p>Advanced AI prediction technology for maximizing your game earnings.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#ai-section">AI Technology</a></li>
+                    <li><a href="#packages">Packages</a></li>
+                    <li><a href="#games">Games</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="https://t.me/noelcashbot"><i class="fab fa-telegram"></i> Telegram Bot</a></li>
+                    <li><a href="https://t.me/noelcashbot"><i class="fas fa-headset"></i> Support Channel</a></li>
+                    <li><a href="#"><i class="fas fa-file-alt"></i> Terms of Service</a></li>
+                    <li><a href="#"><i class="fas fa-lock"></i> Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 MaplePredict. All rights reserved.</p>
+            <p>Created by Noel Thompson</p>
+        </div>
+    </footer>
+
+    <script>
+        // Language selector functionality
+        const languageBtn = document.getElementById('languageBtn');
+        const languageDropdown = document.getElementById('languageDropdown');
+        
+        languageBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', function() {
+            languageDropdown.classList.remove('show');
+        });
+        
+        // Copy promo code functionality
+        function copyPromoCode() {
+            const promoCode = document.getElementById('promoCode');
+            promoCode.select();
+            document.execCommand('copy');
+            
+            const copySuccess = document.getElementById('copySuccess');
+            copySuccess.classList.add('show');
+            
+            setTimeout(() => {
+                copySuccess.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Activate program button
+        document.getElementById('activateBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Please complete your registration to activate the program.');
+        });
+        
+        // Register button
+        document.getElementById('registerBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const promoCode = 'PKL777';
+            const 1xbetLink = 'https://affpa.top/L?tag=d_4539195m_21895c_&site=4539195&ad=21895&r=registration' + promoCode;
+            window.open(1xbetLink, '_blank');
+        });
+        
+        // Animate elements when they come into view
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.fade-in, .animate__animated');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    if (element.classList.contains('fade-in')) {
+                        element.style.animationPlayState = 'running';
+                    } else if (element.classList.contains('animate__animated') && 
+                               !element.classList.contains('animate__delay-1s') &&
+                               !element.classList.contains('animate__delay-2s') &&
+                               !element.classList.contains('animate__delay-3s')) {
+                        element.classList.add(element.getAttribute('class').split(' ')[1]);
+                    }
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
+</body>
+</html>
